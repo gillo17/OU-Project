@@ -11,7 +11,7 @@ const client = createManagementClient({
 });
 
 const REPO_NAME = "scriptbuildertest"; // replace with your Prismic repo name
-const ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoibWFjaGluZTJtYWNoaW5lIiwiZGJpZCI6InNjcmlwdGJ1aWxkZXJ0ZXN0LWQ5YzNmZDc2LThmMjctNGM5YS05MDUzLTBkNjU5ZDJmMWM5OF81IiwiZGF0ZSI6MTc2MTgyOTM3OCwiZG9tYWluIjoic2NyaXB0YnVpbGRlcnRlc3QiLCJhcHBOYW1lIjoic2NyaXB0X2J1aWxkZXIiLCJpYXQiOjE3NjE4MjkzNzh9.owxOjVx2A4qqOZoQSiJLVRxcL30ma5fgHB6ZcA8Gc_A"; // store your token safely!
+const ACCESS_TOKEN = "----"; // store your token safely!
 
 // The Prismic Custom Types API endpoint
 const API_URL = `https://${REPO_NAME}.prismic.io/customtypes`;

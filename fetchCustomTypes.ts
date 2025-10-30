@@ -3,6 +3,7 @@ import { createManagementClient } from '@kontent-ai/management-sdk';
 import { PrismicField, PrismicPage, PrismicComponent } from './prismicTypes';
 import { MappedElement, KontentElementType } from './kontentTypes';
 import { Elements } from '@kontent-ai/delivery-sdk';
+import { buildBooleanElement, buildDateElement, buildDefaultElement, buildEmbedElement, buildGroupElement, buildImageElement, buildLinkElement, buildNumberElement, buildRichTextElement, buildSlicesElement, buildTextElement, KontentElement } from "./kontentElementBuilders";
 
 const client = createManagementClient({
     environmentId: 'xxx', // id of your Kontent.ai environment
@@ -70,43 +71,51 @@ function fetchCustomTypes() : PrismicPage {
 }
 }
 
-function mapPrismicToKontent(component: PrismicComponent) : MappedElement {
-  console.log(component)
-  let kontentType: string;
-  let kontentElement: KontentElementType;
+/**
+ * Dispatcher: select the correct builder based on Prismic component type.
+ */
+function mapPrismicToKontentElement(
+	component: PrismicComponent
+): KontentElement {
+	const t = ((component && component.type) || "").toString().toLowerCase();
 
-
-  switch (component.key) {
-    case 'StructuredText':
-      if (component.config.single) {
-
-        return buildMappedElement(component.key, 'text', component.config )
-
-        kontentType = 'text';
-        kontentElement = { value: '' } as Elements.TextElement;
-      } else {
-        kontentType = 'rich_text';
-        kontentElement = { value: '' } as Elements.RichTextElement;
-      }
-      break;
-
-    case 'Link':
-      kontentType = 'url_slug';
-      kontentElement = { value: '' } as Elements.UrlSlugElement;
-      break;
-
-    default:
-      // fallback custom
-      kontentType = 'custom';
-      kontentElement = { value: '' } as Elements.CustomElement<any>;
-      break;
-  }
-
-  return {
-    codename: component.key,
-    kontentType,
-    kontentElement
-  };
+	switch (t) {
+		case "text":
+		case "string":
+			return buildTextElement(component);
+		case "richtext":
+		case "rich_text":
+		case "structured_text":
+			return buildRichTextElement(component);
+		case "image":
+		case "images":
+			return buildImageElement(component);
+		case "link":
+		case "link.web":
+		case "link.document":
+			return buildLinkElement(component);
+		case "boolean":
+			return buildBooleanElement(component);
+		case "number":
+		case "integer":
+		case "float":
+			return buildNumberElement(component);
+		case "date":
+		case "datetime":
+		case "timestamp":
+			return buildDateElement(component);
+		case "embed":
+		case "oembed":
+			return buildEmbedElement(component);
+		case "group":
+		case "repeat":
+			return buildGroupElement(component);
+		case "slices":
+		case "slice":
+			return buildSlicesElement(component);
+		default:
+			return buildDefaultElement(component);
+	}
 }
 
 function buildMappedElement(codename: string, kontentType: string, kontentElement: Elements.CustomElement<any>): MappedElement {
